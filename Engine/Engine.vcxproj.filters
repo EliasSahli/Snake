@@ -66,11 +66,14 @@
     <ClInclude Include="Goal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffect.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

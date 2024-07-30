@@ -22,6 +22,7 @@
 #include "Game.h"
 #include "SpriteCodex.h"
 
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
@@ -44,13 +45,15 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = ft.Mark();
+
 	if( gameIsStarted )
 	{
 		if( !gameIsOver )
 		{
 			if( wnd.kbd.KeyIsPressed( VK_UP ) )
 			{
-				delta_loc = { 0,-1 };
+				delta_loc = { 0 ,-1 };
 			}
 			else if( wnd.kbd.KeyIsPressed( VK_DOWN ) )
 			{
@@ -65,10 +68,11 @@ void Game::UpdateModel()
 				delta_loc = { 1,0 };
 			}
 
-			++snekMoveCounter;
+			snekMoveCounter += dt;
+
 			if( snekMoveCounter >= snekMovePeriod )
 			{
-				snekMoveCounter = 0;
+				snekMoveCounter -=snekMovePeriod;
 				const Location next = snek.GetNextHeadLocation( delta_loc );
 				if( !brd.IsInsideBoard( next ) ||
 					snek.IsInTileExceptEnd( next ) )
@@ -92,12 +96,8 @@ void Game::UpdateModel()
 					sfxSlither.Play( rng,0.08f );
 				}
 			}
-			++snekSpeedupCounter;
-			if( snekSpeedupCounter >= snekSpeedupPeriod )
-			{
-				snekSpeedupCounter = 0;
-				snekMovePeriod = std::max( snekMovePeriod - 1,snekMovePeriodMin );
-			}
+			
+			snekMovePeriod -= std::max( snekMovePeriod - dt * snekSpeedupFactor,snekMovePeriodMin);
 		}
 	}
 	else
@@ -107,11 +107,12 @@ void Game::UpdateModel()
 			sndMusic.Play( 1.0f,0.6f );
 			gameIsStarted = true;
 		}
-	}
+	} 
 }
 
 void Game::ComposeFrame()
 {
+	
 	if( gameIsStarted )
 	{
 		snek.Draw( brd );
