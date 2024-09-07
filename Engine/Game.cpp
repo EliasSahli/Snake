@@ -32,6 +32,7 @@ Game::Game( MainWindow& wnd )
 	goal( rng,brd,snek )
 {
 	sndTitle.Play( 1.0f,1.0f );
+	brd.SpawnPoison(rng, snek, goal);
 }
 
 void Game::Go()
@@ -72,9 +73,7 @@ void Game::UpdateModel()
 			{
 				snekMoveCounter -= snekMovePeriod;
 				const Location next = snek.GetNextHeadLocation( delta_loc );
-				if( !brd.IsInsideBoard( next ) ||
-					snek.IsInTileExceptEnd( next ) ||
-					brd.CheckForObstacle( next ) )
+				if( !brd.IsInsideBoard( next ) || snek.IsInTileExceptEnd( next ) || brd.CheckForObstacle( next ) )
 				{
 					gameIsOver = true;
 					sndFart.Play();
@@ -89,6 +88,13 @@ void Game::UpdateModel()
 						brd.SpawnObstacle( rng,snek,goal );
 						sfxEat.Play( rng,0.8f );
 					}
+					else if (brd.CheckForPoison(next))
+					{
+						snek.MoveBy(delta_loc);
+						brd.EatPoison(next);
+						sndFart.Play();
+						snekMovePeriod = std::max(snekMovePeriod - dt * snekSpeedupFactor, snekMovePeriodMin);
+					}
 					else
 					{
 						snek.MoveBy( delta_loc );
@@ -96,7 +102,6 @@ void Game::UpdateModel()
 					sfxSlither.Play( rng,0.08f );
 				}
 			}
-			snekMovePeriod = std::max( snekMovePeriod - dt * snekSpeedupFactor,snekMovePeriodMin );
 		}
 	}
 	else
@@ -121,6 +126,7 @@ void Game::ComposeFrame()
 		}
 		brd.DrawBorder();
 		brd.DrawObstacles();
+		brd.DrawPoison();
 	}
 	else
 	{

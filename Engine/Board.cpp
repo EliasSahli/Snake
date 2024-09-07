@@ -88,3 +88,47 @@ void Board::DrawObstacles()
 		}
 	}
 }
+
+bool Board::CheckForPoison(const Location& loc) const
+{
+	return hasPoison[loc.y * width + loc.x];
+}
+
+void Board::SpawnPoison(std::mt19937& rng, const Snake& snake, const Goal& goal)
+{
+	std::uniform_int_distribution<int> xDist(0, GetGridWidth() - 1);
+	std::uniform_int_distribution<int> yDist(0, GetGridHeight() - 1);
+
+	Location newLoc;
+
+	for (int i = 0; i < nPoison; i++)
+	{
+		do
+		{
+			newLoc.x = xDist(rng);
+			newLoc.y = yDist(rng);
+		} 
+		while (snake.IsInTile(newLoc) || CheckForObstacle(newLoc) || goal.GetLocation() == newLoc);
+
+		hasPoison[newLoc.y * width + newLoc.x] = true;
+	}
+}
+
+void Board::EatPoison(const Location& loc)
+{
+	hasPoison[loc.y * width + loc.x] = false;
+}
+
+void Board::DrawPoison()
+{
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (CheckForPoison({ x,y }))
+			{
+				DrawCell({ x,y }, poisonColor);
+			}
+		}
+	}
+}

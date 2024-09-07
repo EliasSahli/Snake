@@ -59,10 +59,10 @@ private:
 	Sound sndMusic = Sound( L"Sounds\\Music_Loop.wav",Sound::LoopType::AutoFullSound );
 	Sound sndTitle = Sound( L"Sounds\\Title.wav" );
 	Sound sndFart = Sound( L"Sounds\\Fart.wav" );
-	static constexpr float snekMovePeriodMin = 0.06f;
+	static constexpr float snekMovePeriodMin = 0.040f;
 	float snekMovePeriod = 0.4f;
 	float snekMoveCounter = 0.0f;
-	static constexpr float snekSpeedupFactor = 0.005f;
+	static constexpr float snekSpeedupFactor = 0.9f;
 	bool gameIsOver = false;
 	bool gameIsStarted = false;
 	/********************************/
